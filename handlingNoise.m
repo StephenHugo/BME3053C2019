@@ -1,11 +1,20 @@
 function handlingNoise(noizLevel)
+% input noise level
 
+% creates a gaussian image
 g       = fspecial('gaussian', 50, 25/6);
-g       = g/max(g(:));
-noiz    = noizLevel*randn( size(g) );
-d       = g>0.5;
 
-fi([g d noiz g+noiz d+noiz])
+% normilize image 
+g       = g/max(g(:));
+
+% creates some noise
+noiz    = noizLevel*randn( size(g) );
+
+% thresholding
+stopsign       = g>0.2;
+
+[stats,z]=expmaxFunc(g+noiz);
+fi(z)
 
 end
 
@@ -29,12 +38,12 @@ u1      = min(x);
 u2      = max(x);
 sig1    = std(x);
 sig2    = std(x);
-pih     = 0.5;
+pih     = 0.1;
 limit   = 1;
 
-while limit>0.001
+while limit>0.0001
     
-% get responsibilities boiiii
+% get responsibilities
 gammai  = pih*dens(x,u2,sig2)./...
     ((1-pih)*dens(x,u1,sig1)+pih*dens(x,u2,sig2));
 
@@ -66,9 +75,9 @@ noiz=zeros(size(in));
 noiz(:)=d1(ind)/max(d1);
 cell=zeros(size(in));
 cell(:)=d2(ind)/max(d2);
-% figure,plot(x,d1/max(d1),x,d2/max(d2))
-% hold on,plot(x,gammai,'black:')
-% hold on,plot(ones(1,2)*thr,[0 1],'r:')
+figure,plot(x,d1/max(d1),x,d2/max(d2))
+hold on,plot(x,gammai,'black:')
+hold on,plot(ones(1,2)*thr,[0 1],'r:')
 
 end
 
