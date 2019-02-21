@@ -1,7 +1,6 @@
-function h = particleSim(windowSize, standardDev, delta, noiz, time)
+function [dx, dy] = particleSim(windowSize, standardDev, delta, noiz, time)
     % When the function is called, the inputs get mapped to these 5
     % variables above
-    
     
     parseinputs
 
@@ -35,8 +34,16 @@ function h = particleSim(windowSize, standardDev, delta, noiz, time)
         h     = h/max(h(:)); % set max value in image to 1
     
         h     = h + noiz*randn( size(h) ); % adding noiz
+        
+        [xpos, ypos] = denoiseFrame(h);
     
         imagesc(h) % overwrite the new image to the figure window
+        
+        hold on
+        
+        plot(xpos, ypos, 'rx', 'MarkerSize', 23, 'LineWidth', 4)
+        
+        hold off
         
        % film(num2str(t)) %% uncomment to save images
     
@@ -48,8 +55,8 @@ function h = particleSim(windowSize, standardDev, delta, noiz, time)
         % sets inputs to within a certain range
         
         % this is a conditional statement
-        if time>100 % returns a boolean output
-            time=100; % runs if the if condition is true
+        if time>1000 % returns a boolean output
+            time=1000; % runs if the if condition is true
         elseif time<2 % this runs if the first condition fails: 0
             time=1; % runs if the elseif condition is true
         end 
