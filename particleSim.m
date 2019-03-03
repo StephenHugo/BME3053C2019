@@ -1,6 +1,11 @@
-function [dx, dy] = particleSim(windowSize, standardDev, delta, noiz, time)
+function particle = particleSim(particle)
     % When the function is called, the inputs get mapped to these 5
     % variables above
+    windowSize = particle.windowSize;
+    standardDev = particle.standardDev;
+    delta = particle.delta;
+    noiz = particle.noiz;
+    time = particle.time;
     
     parseinputs
 
@@ -16,6 +21,8 @@ function [dx, dy] = particleSim(windowSize, standardDev, delta, noiz, time)
     dx = cumsum(dx); % add up individual steps
     dy = cumsum(dy);
     
+    particle.dx = dx+(windowSize+1)/2;
+    particle.dy = dy+(windowSize+1)/2;
     
     % use tabs for readability!!
     for t=1:time
@@ -25,7 +32,7 @@ function [dx, dy] = particleSim(windowSize, standardDev, delta, noiz, time)
         std   = standardDev; % specify gaussian's standard deviation
     
         % create an x and y mesh with offset/displacement
-        [x,y] = meshgrid( (-siz:siz) + dx(t), (-siz:siz) + dy(t)); 
+        [x,y] = meshgrid( (-siz:siz) - dx(t), (-siz:siz) - dy(t)); 
         arg   = -(x.*x + y.*y)/(2*std*std);
 
         h     = exp(arg); % h is the gaussian bead
@@ -35,13 +42,23 @@ function [dx, dy] = particleSim(windowSize, standardDev, delta, noiz, time)
     
         h     = h + noiz*randn( size(h) ); % adding noiz
         
-        [xpos, ypos] = denoiseFrame(h);
-    
+        particle.image(:,:,t) = h;
+        
+        [xpos, ypos, area] = denoiseFrame(h);
+        
+        particle.dx(t,2:4) = xpos;
+        particle.dy(t,2:4) = ypos;
+        particle.area(t,1:3) = area;
+        
+        subplot(2,2,1)
+        
         imagesc(h) % overwrite the new image to the figure window
+        
+        title('original')
         
         hold on
         
-        plot(xpos, ypos, 'rx', 'MarkerSize', 23, 'LineWidth', 4)
+        plot(xpos', ypos', 'x', 'MarkerSize', 23, 'LineWidth', 4)
         
         hold off
         

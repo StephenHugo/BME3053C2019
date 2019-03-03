@@ -1,27 +1,64 @@
-function [xpos, ypos] = denoiseFrame(currentFrame)
+function [xpos, ypos, maxArea] = denoiseFrame(currentFrame)
     
-    % estimate a terrible threshold value using the image mean
-    m   = mean(currentFrame(:));
+    for denoiseType=1:3
+        
+        switch denoiseType
+            
+            case 1
+                
+                temp = convolutionFunc(currentFrame);
+                % estimate a terrible threshold value using the image mean
+                m   = mean(temp(:));
+
+                % create a binary mask...
+                % white pixels are above the threshold value of m
+                msk = temp > m*1.5; 
+                
+                subplot(2,2,2)
+                imagesc(msk), title('convolution')
+                
+            case 2
+                
+                temp = fftFunc(currentFrame);
+                % estimate a terrible threshold value using the image mean
+                m   = mean(temp(:));
+
+                % create a binary mask...
+                % white pixels are above the threshold value of m
+                msk = temp > m*1.1;  
+                subplot(2,2,3)
+                imagesc(msk), title('fft')
+                
+            case 3
+                
+                temp = expmaxFunc(currentFrame);
+
+                % create a binary mask...
+                % white pixels are above the threshold value of m
+                msk = temp > 0.9;
+                subplot(2,2,4)
+                imagesc(msk), title('exp max')
+                
+        end
     
-    % create a binary mask...
-    % white pixels are above the threshold value of m
-    msk = currentFrame > m; 
+        % analyze the binary image and extract the area and centroid info
+        rp = regionprops(msk,'Area','Centroid');
     
-    % analyze the binary image and extract the area and centroid info
-    rp = regionprops(msk,'Area','Centroid');
+        % collect a list of all region areas
+        areas=[rp.Area];
+        
+        maxArea(1,denoiseType) = max(areas);
+        
+        % find the biggest one. This should be the particle region
+        index = areas==max(areas);
     
-    % collect a list of all region areas
-    areas=[rp.Area];
+        % Use the index to get the particle centroid
+        cnt = rp(index).Centroid;
     
-    % find the biggest one. This should be the particle region
-    index = areas==max(areas);
-    
-    % Use the index to get the particle centroid
-    cnt = rp(index).Centroid;
-    
-    % set the x and y position as outputs
-    xpos = cnt(1);
-    ypos = cnt(2);
+        % set the x and y position as outputs
+        xpos(1, denoiseType) = cnt(1);
+        ypos(1, denoiseType) = cnt(2);
+    end
 
 end
 
@@ -43,8 +80,11 @@ function out = fftFunc(in)
     f = fft2(in);
 
     % create a disk to filter out noise in the frequency space
+    disk = fspecial('gaussian',51,25/6);
+    disk = disk/max(disk(:)) > 0.7;
 
     % apply the disk
+    f = f.*fftshift(disk);
 
     % return the less noisy image
     out = abs(ifft2(f));
