@@ -7,18 +7,18 @@ function out = readImages(varargin)
     else
         n=varargin;
     end
-    fi(1) % default image with formating
 
     for t=1:length(n)
-    %    a = imread(['images/im',num2str(t),'.jpg']);
-        a = double(imread( n{t} )); % use cell array notation
-        a = sum(a,3)/3;
+        fi(1)
+ 
+        a = imread( n{t} ); % use cell array notation
         
-        m = mean(a(:)); % calculate mean of entire image
-        imagesc(a>m)
-
+        image(a)
+        
+        % out(t).pic = a;
+        
         pause(0.02) 
 
     end
-    out = a/m;
+    
 end

@@ -2,12 +2,6 @@ function colorSpace(in)
 
     a = double(imread( in )); % load up an image
     
-%     siz = size(a);
-%     if siz(1) > 100
-%         step = 10*round(siz(1)/100);
-%     else
-%         step = 10;
-%     end
     step=1;
     
     % separate out all the color channels
@@ -35,18 +29,6 @@ function colorSpace(in)
     
     % check the result
     fi(z)
-    
-%     subplot(2,1,1)
-%     image(uint8(a)),axis off
-%     
-%     subplot(2,1,2)
-%     plot3(0,0,0,'.black')
-%     hold on
-%     for t=1:numel(r);
-%         plot3(r(t),g(t),b(t),'s',...
-%             'MarkerFaceColor',[r(t) g(t) b(t)]/255,...
-%             'MarkerEdgeColor','none')
-%         pause(0.02)
-%     end
+
 
 end
