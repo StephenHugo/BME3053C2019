@@ -6,7 +6,7 @@ function pics = fixThis(varargin)
 
     % first load up images
     % output a structured variable that contains them
-    pics = readImages(varargin);
+    pics = readImages(varargin{:});
 
     close all
     % zoom in on objects of interest
@@ -18,7 +18,7 @@ function pics = fixThis(varargin)
 
 end
 
-function p = cropPics(p)
+function p = cropPics(p) % pics is now p
 
     for t = 1:length(p)
 
@@ -33,13 +33,13 @@ function p = createMask(p)
     
     for t=1:length(p)
         
-        fi(1)
-        prettyColors(p(t).cropped)
+        %fi(1)
+        %prettyColors(p(t).cropped)
         
-        %a = sum(double(p(t).cropped),3)/3;
-        %m = mean(a(:));
-        %p(t).msk = a>75;
-        %tryWatershed(p(t).msk)
+        a = sum(double(p(t).cropped),3)/3; % greyscale
+        m = mean(a(:)); 
+        p(t).msk = a>m; % arbitrary threshold
+        tryWatershed(p(t).msk)
         
         %nhist(a(:),25)
     end
@@ -67,21 +67,21 @@ function prettyColors(in)
     end
     
     % separate out all the color channels
-    r = double(in(1:step:end, 1:step:end, 1));
-    g = double(in(1:step:end, 1:step:end, 2));
-    b = double(in(1:step:end, 1:step:end, 3));
+    r = double(in(1:step:end, 1:step:end, 1)); % red color channel
+    g = double(in(1:step:end, 1:step:end, 2)); % green
+    b = double(in(1:step:end, 1:step:end, 3)); % blue
     
         
     subplot(1,2,1)
-    image(in),axis off
+    image(uint8(in)),axis off
      
     subplot(1,2,2)
     plot3(0,0,0,'.black')
     hold on
      
-    for t=1:numel(r);
-        plot3(r(t),g(t),b(t),'s',...
-             'MarkerFaceColor',[r(t) g(t) b(t)]/255,...
+    for t=1:numel(r)
+        plot3(r(t),g(t),b(t),'o',...
+             'MarkerFaceColor',[r(t) g(t) b(t)]/255,... % divide by 255 to scale values
              'MarkerEdgeColor','none')
         pause(0.02)
     end
