@@ -1,4 +1,4 @@
-function pics = fixThis(varargin)
+function pics = fixThisAgain(varargin)
     % Here is some code that you will need to fix today.
     % As you hit errors, track down the cause and make changes.
 
@@ -8,7 +8,6 @@ function pics = fixThis(varargin)
     % output a structured variable that contains them
     pics = readImages(varargin{:});
 
-    close all
     % zoom in on objects of interest
     pics = cropPics(pics);
 

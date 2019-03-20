@@ -9,13 +9,10 @@ function out = readImages(varargin)
     end
 
     for t=1:length(n)
-        fi(1)
  
         a = imread( n{t} ); % use cell array notation
         
-        image(a)
-        
-        % out(t).pic = a;
+        out(t).pic = a;
         
         pause(0.02) 
 
