@@ -1,0 +1,33 @@
+Psuedo Code:
+
+Load images: a = imread('C://folder1/folder2/path to image');
+	- greyscale (1-color channel): colormap(summer)
+		imagesc(a) <- scaled image
+		Use this for binary images too!
+		fi(a) <- custom function that formats the figure window
+	-color images (3-color channels) PNG JPG BMP (m x n x 3)
+		imshow(a)
+		image(a) <- format in uint8 (unsigned 8-bit integers)
+
+crop images: [a, pos] = select(a)
+	- fi(a)
+	- pos = ginput(2); output two points
+	- outputs -> a(pos)
+
+Denoising: denoiseFrame.m
+	-filtering by blur
+	-fft filtering
+
+turn them to black and white (binary)
+	- use an intensity threshold
+	- logic statements (a>mean(a(:)))
+	- watershed
+	- expectation maximization
+
+measure BW images: regionprops.m
+	- outputs a structured variable (like a folder)
+	- must use . notation, i.e. president.fuchs)
+
+make figures: I like to use structured variables like 'p'
+	- field contain data, labels, times, dates, notes
+	- make your life convenient
