@@ -3,8 +3,8 @@ function [u,b] = levelset(in)
 A = max(in(:));
 nu = 0.01*A^2;
 mu = 0.05;
-sigma = 5;
-itout = 150;
+sigma = 3;
+itout = 3;
 itin = 2;
 tstep = 0.005;
 epsilon = 1;
@@ -24,7 +24,7 @@ for n=1:itout
    
    imagesc(log(in))
    hold on
-   contour(u+7,[7 7],'r')
+   contour(u,[1 1],'r')
    hold off
    pause(0.02)
 end

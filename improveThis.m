@@ -5,7 +5,7 @@ function pics = improveThis(varargin)
     % output a structured variable that contains them
     pics = readImages(varargin{:});
     
-    pics = downsampleImage(pics, 2);
+    pics = downsampleImage(pics, 1);
 
     % zoom in on objects of interest
     pics = cropPics(pics);
